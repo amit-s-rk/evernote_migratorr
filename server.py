@@ -103,13 +103,13 @@ def upload_file(service, file_path, parent_id):
             service.files().create(body=file_metadata, media_body=media, fields="id").execute()
 
 
-def upload_folder_recursive(service, local_path, parent_id=None):
+def upload_folder(service, local_path, parent_id=None):
             folder_name = os.path.basename(local_path)
             folder_id = create_drive_folder(service, folder_name, parent_id)
             for item in os.listdir(local_path):
                 item_path = os.path.join(local_path, item)
                 if os.path.isdir(item_path):
-                    upload_folder_recursive(service, item_path, folder_id)
+                    upload_folder(service, item_path, folder_id)
                 else:
                     upload_file(service, item_path, folder_id)
 
@@ -119,9 +119,10 @@ if __name__ == "__main__":
     output_folder = "./Evernote"
     main(input_folder,output_folder)
     drive_service = authenticate_drive()
-    upload_folder_recursive(drive_service, output_folder )
 
-
+    print("uploading to Google Drive")
+    upload_folder(drive_service, output_folder )
+    print("Upload folder to Google Drive complete!")
 
 
 
